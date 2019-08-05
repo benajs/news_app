@@ -4,15 +4,14 @@ import 'package:news_app/utils/network_util.dart';
 
 NetworkUtil _netUtil = new NetworkUtil();
 
-Future<Stream<News>> getNews() async {
+getNews() async {
   var path = "news";
 
   final streamedRest = await _netUtil.get(path);
-  print(streamedRest.statusCode);
 
-  return streamedRest.stream
-      .transform(utf8.decoder)
-      .transform(json.decoder)
-      .expand((data) => (data as List))
-      .map((data) => News.fromJSON(data));
+  print(streamedRest.toString());
+
+  Iterable list = json.decode(streamedRest.body);
+  var news = list.map((model) => News.fromJSON(model)).toList();
+  return news;
 }

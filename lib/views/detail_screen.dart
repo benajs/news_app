@@ -12,13 +12,25 @@ class DetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Use the Todo to create the UI.
     return Scaffold(
-      appBar: AppBar(
-        title: Text(news.title),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Text(news.content),
-      ),
-    );
+        appBar: AppBar(
+          title: Text(news.title),
+          backgroundColor: Colors.brown,
+        ),
+        body: Container(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(news.content),
+            ),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.0, 0.7],
+                colors: [
+                  Colors.white,
+                  Colors.orangeAccent,
+                ],
+              ),
+            )));
   }
 }

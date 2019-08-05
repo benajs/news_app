@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:news_app/utils/network_util.dart';
 import 'package:news_app/views/home_screen.dart';
 import 'package:news_app/views/loading.dart';
@@ -56,15 +55,60 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final emailField = TextField(
+      controller: _emailFilter,
+      obscureText: false,
+      style: style,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          hintText: "Email",
+          border:
+              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+    );
+    final passwordField = TextField(
+      controller: _passwordFilter,
+      obscureText: true,
+      style: style,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          hintText: "Password",
+          border:
+              OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+    );
+
     return new Scaffold(
       appBar: _buildBar(context),
-      body: new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Column(
-          children: <Widget>[
-            _buildTextFields(),
-            _buildButtons(),
-          ],
+      body: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0.0, 0.7],
+              colors: [
+                Colors.white,
+                Colors.orangeAccent,
+              ],
+            ),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  height: 50,
+                ),
+                SizedBox(height: 10.0),
+                emailField,
+                SizedBox(height: 10.0),
+                passwordField,
+                SizedBox(height: 35.0),
+                _buildButtons(),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -72,42 +116,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildBar(BuildContext context) {
     return new AppBar(
-      title: new Text("Tech News"),
       centerTitle: true,
-    );
-  }
-
-  Widget _buildTextFields() {
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          new Container(
-            child: new TextField(
-              controller: _emailFilter,
-              style: style,
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                  hintText: "Email",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32.0)),
-                  labelText: 'Email'),
-            ),
-          ),
-          new Container(
-            child: new TextField(
-              controller: _passwordFilter,
-              style: style,
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                  hintText: "Password",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32.0)),
-                  labelText: 'Password'),
-              obscureText: true,
-            ),
-          )
-        ],
+      title: Text(
+        "Tech News",
       ),
+      backgroundColor: Colors.brown,
     );
   }
 
@@ -116,12 +129,16 @@ class _LoginPageState extends State<LoginPage> {
       return new Container(
         child: new Column(
           children: <Widget>[
-            new RaisedButton(
-              child: new Text('Login',
-                  style: style.copyWith(
-                      color: Colors.white, fontWeight: FontWeight.bold)),
-              onPressed: _loginPressed,
-            ),
+            new Material(
+                elevation: 5.0,
+                borderRadius: BorderRadius.circular(30.0),
+                color: Colors.brown,
+                child: new MaterialButton(
+                  child: new Text('Login',
+                      style: style.copyWith(
+                          color: Colors.white, fontWeight: FontWeight.bold)),
+                  onPressed: _loginPressed,
+                )),
             new FlatButton(
               child: new Text('Dont have an account? Tap here to register.'),
               onPressed: _formChange,
@@ -137,10 +154,16 @@ class _LoginPageState extends State<LoginPage> {
       return new Container(
         child: new Column(
           children: <Widget>[
-            new RaisedButton(
-              child: new Text('Create an Account'),
-              onPressed: _createAccountPressed,
-            ),
+            new Material(
+                elevation: 5.0,
+                borderRadius: BorderRadius.circular(30.0),
+                color: Colors.brown,
+                child: new MaterialButton(
+                  child: new Text('Create an account',
+                      style: style.copyWith(
+                          color: Colors.white, fontWeight: FontWeight.bold)),
+                  onPressed: _createAccountPressed,
+                )),
             new FlatButton(
               child: new Text('Have an account? Click here to login.'),
               onPressed: _formChange,
@@ -150,8 +173,6 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
   }
-
-  // These functions can self contain any user auth logic required, they all have access to _email and _password
 
   void _loginPressed() {
     print('The user wants to login with $_email and $_password');
@@ -168,21 +189,22 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future authenticate(username, password) async {
-    LoadingIndicator();
     Map<String, String> queryParameters = {
-      'user': username,
-      'password': password,
+      'session[email]': username,
+      'session[password]': password,
+      "commit": "Sign+in"
     };
     var path = "session";
-    var response = await _netUtil.post(path, queryParameters);
-    print(response.statusCode);
-    if (response.statusCode == 200) {
+    // var response = await _netUtil.post(path, queryParameters);
+    // print(response.statusCode);
+    // if (response.statusCode == 302) {
       print("Logged in");
+      //TODO: route navigations
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Home()),
       );
-    }
+ //   }
   }
 
   Future createUser(username, password) async {
@@ -191,7 +213,7 @@ class _LoginPageState extends State<LoginPage> {
       'session[password]': password,
     };
     var path = "user";
-    var response = _netUtil.post(path, queryParameters) as Response;
+    var response = _netUtil.post(path, queryParameters);
 
     if (response.statusCode == 200) {
       print("User created");
