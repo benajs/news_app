@@ -10,6 +10,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<News> _news = <News>[];
+  var load_state = false;
 
   @override
   void initState() {
@@ -19,7 +20,11 @@ class _HomeState extends State<Home> {
 
   listenForNews() async {
     print("Reading news");
+    load_state = true;
     _news = await getNews();
+    load_state = false;
+    setState(() => _news);
+    print("news read");
   }
 
   Widget makeBody(BuildContext context) => RefreshIndicator(
@@ -45,49 +50,62 @@ class _HomeState extends State<Home> {
                 getNewsRow(news: _news[position])),
       );
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text('Tech news'),
-          backgroundColor: Colors.brown,
-        ),
-        body: ListView.builder(
-            itemCount: _news.length,
-            itemBuilder: (context, index) {
-              return new Card(
-                  child: Container(
-                      child: ListTile(
-                          title: Text(_news[index].title),
-                          subtitle: Text('Author:${_news[index].content}'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailScreen(news: _news[index]),
-                              ),
-                            );
-                          }),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          stops: [0.0, 0.7],
-                          colors: [
-                            Colors.white,
-                            Colors.orangeAccent,
-                          ],
-                        ),
-                      )));
-            }),
-      );
+  Widget build(BuildContext context) {
+    return new Center(
+        child: load_state
+            ? Center(
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.brown),
+                ),
+              )
+            : getListView(context)
+        //  ListView.builder(
+        //     itemCount: _news?.length,
+        //     itemBuilder: (context, index) {
+        //       return get(news: _news[index]);
+        //     })
+        );
+  }
+
+  Widget getListView(BuildContext context) {
+    return ListView.builder(
+        itemCount: _news?.length,
+        itemBuilder: (context, index) {
+          return new Card(
+              child: Container(
+                  child: ListTile(
+                      title: Text(_news[index].title),
+                      subtitle: Text('Author:${_news[index].content}'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DetailScreen(news: _news[index]),
+                          ),
+                        );
+                      }),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: [0.0, 0.7],
+                      colors: [
+                        Colors.white,
+                        Colors.orangeAccent,
+                      ],
+                    ),
+                  )));
+        });
+  }
 
   getNewsRow({News news}) {
     print(news);
     CircleAvatar channelLogo(var url) {
       try {
         return new CircleAvatar(
-            //  backgroundImage: new NetworkImage(),
-            );
+          child: new Icon(Icons.library_books),
+        );
       } catch (Exception) {
         return new CircleAvatar(
           child: new Icon(Icons.library_books),
