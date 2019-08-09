@@ -15,12 +15,12 @@ class DetailScreen extends StatelessWidget {
       child: Column(children: <Widget>[
         ListTile(
           title: Text(news.title),
-          subtitle: Text('Author:${news.content}'),
+          subtitle: Text('Author:${news.author}'),
         ),
         Divider(),
         Center(
-          child: Image.network(
-              "https://flutter.dev/assets/ui/layout/card-flutter-gallery-184963eb23d8824ef3df612a6b40205ed113e7c00da98fa22228cc6e6f619d88.png"),
+          child: Image.network(news.image)
+           //   "https://flutter.dev/assets/ui/layout/card-flutter-gallery-184963eb23d8824ef3df612a6b40205ed113e7c00da98fa22228cc6e6f619d88.png"),
         ),
         Divider(),
         Center(
