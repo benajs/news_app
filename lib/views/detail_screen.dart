@@ -11,21 +11,22 @@ class DetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Use the Todo to create the UI.
-    return Container(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text(news.content),
+    return Card(
+      child: Column(children: <Widget>[
+        ListTile(
+          title: Text(news.title),
+          subtitle: Text('Author:${news.content}'),
         ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [0.0, 0.7],
-            colors: [
-              Colors.white,
-              Colors.orangeAccent,
-            ],
-          ),
-        ));
+        Divider(),
+        Center(
+          child: Image.network(
+              "https://flutter.dev/assets/ui/layout/card-flutter-gallery-184963eb23d8824ef3df612a6b40205ed113e7c00da98fa22228cc6e6f619d88.png"),
+        ),
+        Divider(),
+        Center(
+          child: Text(news.content),
+        )
+      ]),
+    );
   }
 }

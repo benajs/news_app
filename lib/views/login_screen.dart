@@ -12,21 +12,29 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailFilter = new TextEditingController();
-  final TextEditingController _passwordFilter = new TextEditingController();
   final load_state = false;
+  static String username = "", password = "";
+  final emailField = TextField(
+    obscureText: false,
+    onChanged: (text) {
+      username = text;
+    },
+    decoration: InputDecoration(
+      hintText: "Email",
+    ),
+  );
+  final passwordField = TextField(
+      obscureText: true,
+      onChanged: (text) {
+        password = text;
+      },
+      decoration: InputDecoration(
+        hintText: "Password",
+      ));
 
-  String _email = "";
-  String _password = "";
-  FormType _form = FormType
-      .login; // our default setting is to login, and we should switch to creating an account when the user chooses to
+  FormType _form = FormType.login;
 
-  _LoginPageState() {
-    _emailFilter.addListener(_emailListen);
-    _passwordFilter.addListener(_passwordListen);
-  }
-
-  Future authenticate(username, password) async {
+  Future authenticate() async {
     Map<String, String> queryParameters = {
       'session[email]': username,
       'session[password]': password,
@@ -35,83 +43,30 @@ class _LoginPageState extends State<LoginPage> {
     var path = "session";
     // var response = await _netUtil.post(path, queryParameters);
     // print(response.statusCode);
-    // if (response.statusCode == 302) {
-    print("Logged in");
-    //TODO: route navigations
+    // if ([302, 200].contains(response.statusCode)) {
+    //   print("Logged in");
+    //   Navigator.pushNamed(context, '/home');
+    // }
+
     Navigator.pushNamed(context, '/home');
-    //   }
   }
 
   @override
   Widget build(BuildContext context) {
-    final emailField = TextField(
-        controller: _emailFilter,
-        obscureText: false,
-        decoration: InputDecoration(
-          hintText: "Email",
-        ));
-    final passwordField = TextField(
-        controller: _passwordFilter,
-        obscureText: true,
-        decoration: InputDecoration(
-          hintText: "Password",
-        ));
-
-    return new Center(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops: [0.0, 0.7],
-              colors: [
-                Colors.white,
-                Colors.orangeAccent,
-              ],
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 50,
-                ),
-                SizedBox(height: 10.0),
-                emailField,
-                SizedBox(height: 10.0),
-                passwordField,
-                SizedBox(height: 35.0),
-                _buildButtons(),
-              ],
-            ),
-          ),
+    return new Container(
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            emailField,
+            passwordField,
+            _buildButtons(),
+          ],
         ),
-      );
-  }
-
-  // Swap in between our two forms, registering and logging in
-  Future createUser(username, password) async {
-    Map<String, String> queryParameters = {
-      'session[email]': username,
-      'session[password]': password,
-    };
-    var path = "user";
-    var response = _netUtil.post(path, queryParameters);
-
-    if (response.statusCode == 200) {
-      print("User created");
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
-      );
-    } else {
-      print(response.statusCode);
-      print(response.request);
-      print(response.body);
-    }
+      ),
+    );
   }
 
   Widget _buildButtons() {
@@ -119,14 +74,10 @@ class _LoginPageState extends State<LoginPage> {
       return new Container(
         child: new Column(
           children: <Widget>[
-            new Material(
-                elevation: 5.0,
-                borderRadius: BorderRadius.circular(30.0),
-                color: Colors.brown,
-                child: new MaterialButton(
-                  child: new Text('Login'),
-                  onPressed: _loginPressed,
-                )),
+            new RaisedButton(
+              child: new Text('Login'),
+              onPressed: loginPressed,
+            ),
             new FlatButton(
               child: new Text('Dont have an account? Tap here to register.'),
               onPressed: _formChange,
@@ -159,17 +110,28 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _createAccountPressed() {
-    createUser(_email, _password);
-    print('The user wants to create an accoutn with $_email and $_password');
+  Future createUser(username, password) async {
+    Map<String, String> queryParameters = {
+      'session[email]': username,
+      'session[password]': password,
+    };
+    var path = "user";
+    var response = _netUtil.post(path, queryParameters);
+
+    if (response.statusCode == 200) {
+      print("User created");
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    } else {
+      print(response);
+    }
   }
 
-  void _emailListen() {
-    if (_emailFilter.text.isEmpty) {
-      _email = "";
-    } else {
-      _email = _emailFilter.text;
-    }
+  void _createAccountPressed() {
+    createUser(username, password);
+    print('The user wants to create an account with $username and $password');
   }
 
   void _formChange() async {
@@ -182,20 +144,12 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  void _loginPressed() {
-    print('The user wants to login with $_email and $_password');
-    authenticate(_email, _password);
-  }
-
-  void _passwordListen() {
-    if (_passwordFilter.text.isEmpty) {
-      _password = "";
-    } else {
-      _password = _passwordFilter.text;
-    }
+  void loginPressed() {
+    print('The user wants to login with $username and $password');
+    authenticate();
   }
 
   void _passwordReset() {
-    print("The user wants a password reset request sent to $_email");
+    print("The user wants a password reset request sent to $username");
   }
 }
