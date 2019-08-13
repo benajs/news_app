@@ -10,7 +10,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<News> _news = <News>[];
-  var is_loading = false;
+  var isLoading = false;
 
   @override
   void initState() {
@@ -20,9 +20,9 @@ class _HomeState extends State<Home> {
 
   listenForNews() async {
     print("Reading news");
-    is_loading = true;
+    isLoading = true;
     _news = await getNews();
-    is_loading = false;
+    isLoading = false;
     setState(() => _news);
     print("news read");
   }
@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: is_loading
+        child: isLoading
             ? Center(
                 child: CircularProgressIndicator(
                   valueColor: new AlwaysStoppedAnimation<Color>(Colors.brown),
