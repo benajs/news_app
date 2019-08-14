@@ -7,6 +7,6 @@ A new Flutter project.
 This project displays the news from the news-api
 
 
-# Update the host url in the network_util file 
+#Update the host url in the network_util file 
 
-# flutter run to start the mobile app
+#flutter run to start the mobile app
