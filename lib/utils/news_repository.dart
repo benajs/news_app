@@ -4,10 +4,10 @@ import 'package:news_app/utils/network_util.dart';
 
 NetworkUtil _netUtil = new NetworkUtil();
 
-Future<List> getNews() async {
+getNews() async {
   var path = "news";
 
-  final streamedRest = await _netUtil.dioGet(path);
+  final streamedRest = await _netUtil.get(path);
 
   print(streamedRest.toString());
 

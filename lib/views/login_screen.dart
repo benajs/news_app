@@ -12,8 +12,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final isLoading = false;
-  static String username = "benajs@gmail.com", password = "12345678";
+  final load_state = false;
+  static String username = "", password = "";
   final emailField = TextField(
     obscureText: false,
     onChanged: (text) {
@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
       "commit": "Sign+in"
     };
     var path = "session";
-    var response = await _netUtil.dioPost(path, queryParameters);
+    var response = await _netUtil.post(path, queryParameters);
     print(response.statusCode);
     if ([302, 200].contains(response.statusCode)) {
       print("Logged in");
@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            emailField,Padding(padding: EdgeInsets.all(2.0),),
+            emailField,
             passwordField,
             _buildButtons(),
           ],
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
       return new Container(
         child: new Column(
           children: <Widget>[
-            new RaisedButton(padding: EdgeInsets.all(2.0),
+            new RaisedButton(
               child: new Text('Login'),
               onPressed: loginPressed,
             ),

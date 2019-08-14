@@ -1,7 +1,8 @@
+
 class News {
   final int id;
   final String title;
-  final String published;
+  final String content;
   final String author;
   final String image;
 
@@ -9,6 +10,6 @@ class News {
       : id = jsonMap['id'],
         title = jsonMap['title'],
         author = jsonMap['author'],
-        published = jsonMap['published'],
+        content = jsonMap['content'],
         image = jsonMap['image'];
 }
