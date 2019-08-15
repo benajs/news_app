@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:news_app/models/news.dart';
 import 'package:news_app/utils/network_util.dart';
 
@@ -11,7 +10,7 @@ Future<List> getNews() async {
 
   print(streamedRest.toString());
 
-  Iterable list = json.decode(streamedRest.body);
+  Iterable list = streamedRest.data;
   var news = list.map((model) => News.fromJSON(model)).toList();
   return news;
 }

@@ -45,21 +45,42 @@ class _HomeState extends State<Home> {
         itemCount: _news?.length,
         itemBuilder: (context, index) {
           return new Card(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                ListTile(
+                    leading: Container(child: Image.network(_news[index].image)),
+                    title: Text(
+                      _news[index].title,
+                      style: Theme.of(context).textTheme.title,
+                    ),
+                    subtitle: Text('Author:${_news[index].author.trim()}'),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              DetailScreen(news: _news[index]),
+                        ),
+                      );
+                    }),
+              ]));
+        });
+  }
+
+  Widget getGridView(BuildContext context) {
+    return ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: _news?.length,
+        itemBuilder: (context, index) {
+          return new Card(
             child: Column(children: [
-              ListTile(
-                  title: Text(_news[index].title),
-                  leading: CircleAvatar(
-                    child: Image.network(_news[index].image)
-                      //  "https://flutter.dev/assets/ui/layout/card-flutter-gallery-184963eb23d8824ef3df612a6b40205ed113e7c00da98fa22228cc6e6f619d88.png"),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailScreen(news: _news[index]),
-                      ),
-                    );
-                  }),
+              GridTileBar(
+                title: Text(_news[index].title),
+                leading: CircleAvatar(child: Image.network(_news[index].image)
+                    //  "https://flutter.dev/assets/ui/layout/card-flutter-gallery-184963eb23d8824ef3df612a6b40205ed113e7c00da98fa22228cc6e6f619d88.png"),
+                    ),
+              ),
               Divider(),
               ListTile(
                 subtitle: Text('Author:${_news[index].author}'),
