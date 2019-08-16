@@ -12,8 +12,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final isLoading = false;
-  static String username = "benajs@gmail.com", password = "12345678";
+  final load_state = false;
+  static String username = "", password = "";
   final emailField = TextField(
     obscureText: false,
     onChanged: (text) {
@@ -41,14 +41,15 @@ class _LoginPageState extends State<LoginPage> {
       "commit": "Sign+in"
     };
     var path = "session";
-    // var response = await _netUtil.dioPost(path, queryParameters);
-    // print(response.statusCode);
-    // if ([302, 200].contains(response.statusCode)) {
-    //   print("Logged in");
-    //   Navigator.pushNamed(context, '/home');
-    // }
+    
+    var response = await _netUtil.post(path, queryParameters);
+    print(response.statusCode);
+    if ([302, 200].contains(response.statusCode)) {
+      print("Logged in");
+      Navigator.pushNamed(context, '/home');
+    }
 
-    Navigator.pushNamed(context, '/home');
+ //   Navigator.pushNamed(context, '/home');
   }
 
   @override
