@@ -41,6 +41,7 @@ class _LoginPageState extends State<LoginPage> {
       "commit": "Sign+in"
     };
     var path = "session";
+    
     var response = await _netUtil.post(path, queryParameters);
     print(response.statusCode);
     if ([302, 200].contains(response.statusCode)) {
@@ -48,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushNamed(context, '/home');
     }
 
-  //  Navigator.pushNamed(context, '/home');
+ //   Navigator.pushNamed(context, '/home');
   }
 
   @override
@@ -60,7 +61,14 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Image(
+              fit: BoxFit.cover,
+              image: AssetImage('assets/home.jpg'),
+            ),
             emailField,
+            Padding(
+              padding: EdgeInsets.all(2.0),
+            ),
             passwordField,
             _buildButtons(),
           ],
@@ -75,6 +83,7 @@ class _LoginPageState extends State<LoginPage> {
         child: new Column(
           children: <Widget>[
             new RaisedButton(
+              padding: EdgeInsets.all(2.0),
               child: new Text('Login'),
               onPressed: loginPressed,
             ),
