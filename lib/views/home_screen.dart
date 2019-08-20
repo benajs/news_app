@@ -70,27 +70,4 @@ class _HomeState extends State<Home> {
               ]));
         });
   }
-
-  Widget getGridView(BuildContext context) {
-    return ListView.builder(
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: _news?.length,
-        itemBuilder: (context, index) {
-          return new Card(
-            child: Column(children: [
-              GridTileBar(
-                title: Text(_news[index].title),
-                leading: CircleAvatar(child: Image.network(_news[index].image)
-                    //  "https://flutter.dev/assets/ui/layout/card-flutter-gallery-184963eb23d8824ef3df612a6b40205ed113e7c00da98fa22228cc6e6f619d88.png"),
-                    ),
-              ),
-              Divider(),
-              ListTile(
-                subtitle: Text(
-                    'Category:${_news[index].category}\nAuthor:${_news[index].author}\nPublished:${_news[index].published}'),
-              )
-            ]),
-          );
-        });
-  }
 }

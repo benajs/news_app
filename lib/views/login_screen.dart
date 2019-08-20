@@ -12,8 +12,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final isLoading = false;
-  static String username = "benajs@gmail.com", password = "12345678";
+  final load_state = false;
+  static String username = "", password = "";
   final emailField = TextField(
     obscureText: false,
     onChanged: (text) {

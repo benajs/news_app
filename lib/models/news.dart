@@ -1,12 +1,13 @@
+
 class News {
   final int id;
   final String title;
-  final String published;
+  final String content;
   final String author;
   final String image;
-  final String content;
   final String source;
   final String category;
+  final String published;
 
   News.fromJSON(Map<String, dynamic> jsonMap)
       : id = jsonMap['id'],

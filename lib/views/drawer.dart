@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/utils/network_util.dart';
 
 class SearchDrawer extends StatefulWidget {
   SearchDrawer({Key key}) : super(key: key);
@@ -42,7 +43,7 @@ class _SearchDrawerState extends State<SearchDrawer> {
                   style: Theme.of(context).textTheme.subhead,
                 ),
                 onTap: () {
-//TODO Log out
+
                 }),
           ],
         ))
