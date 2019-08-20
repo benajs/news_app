@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/views/drawer.dart';
+import 'package:news_app/views/home_screen.dart';
 import 'package:news_app/views/theme.dart';
 
 import 'app.dart';
@@ -14,45 +15,64 @@ void main() {
     //Home
     home: Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(title: Text("Tech News")),
+      appBar: AppBar(
+        title: Text("Trending"),
+        leading: CircleAvatar(
+          child: Image(image: AssetImage('assets/logo.png')),
+        ),
+      ),
       body: TechNews(),
       drawer: new SearchDrawer(),
       resizeToAvoidBottomPadding: false,
-      persistentFooterButtons: <Widget>[
-        IconButton(
-            icon: isProfile ? Icon(Icons.person_outline) : Icon(Icons.person),
-            tooltip: "Profile",
-            onPressed: () {
-              isProfile = !isProfile;
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: (int index) {
+          switch (index) {
+            case 0:
               _scaffoldKey.currentState.openDrawer();
-            }),
-        IconButton(
-            icon: Icon(Icons.search),
-            tooltip: "Search",
-            onPressed: () {
-              _scaffoldKey.currentState.showSnackBar(new SnackBar(
-                content: Text("Search"),
-              ));
-            }),
-        IconButton(
-            icon: Icon(Icons.favorite_border),
-            tooltip: "Favourite",
-            onPressed: () {
-              // TODO Show Drawer
-            }),
-        IconButton(
+              break;
+            case 1:
+              Navigator.of(_scaffoldKey.currentContext).pushNamed('/home');
+              break;
+          }
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            title: Text("Profile"),
+            activeIcon: Icon(Icons.person),
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            tooltip: "Home",
-            onPressed: () {
-              // TODO Show Drawer
-            }),
-        IconButton(
-            icon: Icon(Icons.share),
-            tooltip: "Share",
-            onPressed: () {
-              // TODO Show Drawer
-            }),
-      ],
+            title: Text("Home"),
+          )
+          // IconButton(
+          //     icon: Icon(Icons.search),
+          //     tooltip: "Search",
+          //     onPressed: () {
+          //       _scaffoldKey.currentState.showSnackBar(new SnackBar(
+          //         content: Text("Search"),
+          //       ));
+          //     }),
+          // IconButton(
+          //     icon: Icon(Icons.favorite_border),
+          //     tooltip: "Favourite",
+          //     onPressed: () {
+          //       // TODO Show Drawer
+          //     }),
+          // IconButton(
+          //     icon: Icon(Icons.share),
+          //     tooltip: "Share",
+          //     onPressed: () {
+          //       // TODO Show Drawer
+          //     }),
+        ],
+      ),
+      resizeToAvoidBottomInset: false,
     ),
+    //Route
+    routes: {
+      '/home': (context) => Home(),
+      //  '/detail': (context) => DetailScreen()
+    },
   ));
 }

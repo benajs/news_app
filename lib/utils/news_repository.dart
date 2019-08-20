@@ -6,7 +6,7 @@ NetworkUtil _netUtil = new NetworkUtil();
 getNews() async {
   var path = "news";
 
-  final streamedRest = await _netUtil.get(path);
+  final streamedRest = await _netUtil.dioGet(path);
 
   print(streamedRest.toString());
 
