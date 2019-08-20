@@ -1,53 +1,84 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' as http;
-import 'package:cookie_jar/cookie_jar.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NetworkUtil {
   static NetworkUtil _instance = new NetworkUtil.internal();
   NetworkUtil.internal();
   factory NetworkUtil() => _instance;
 
-  HttpClient client = new HttpClient();
-  final url = "loud-cobra-93.localtunnel.me";
-  DefaultHttpClientAdapter dioClient = new DefaultHttpClientAdapter();
+  final url = "demo9629643.mockable.io";
 
-  final dio = new Dio((new BaseOptions(
-    baseUrl: "https://sharp-cobra-39.localtunnel.me/",
+  static BaseOptions options = new BaseOptions(
+    baseUrl: "http://demo9629643.mockable.io/",
+    contentType: ContentType.parse("application/json"),
     headers: {
       "Connection": "keep-alive",
     },
-  )));
+  );
+  final dio = new Dio(options);
+  SharedPreferences prefs;
+  String token_header = "auth";
 
-  dioPost(path, queryParameters) async {
-    Directory tempDir = await getTemporaryDirectory();
-    String tempPath = tempDir.path;
+  dioLogin(path, username, password) async {
+    Map<String, String> queryParameters = {
+      'session[email]': username,
+      'session[password]': password,
+      "commit": "Sign+in"
+    };
     var response;
     try {
       var uri = Uri.https(url, path);
       response = await dio.post(
         uri.toString(),
         queryParameters: queryParameters,
-        // onSendProgress: (int sent, int total) {
-        //   print("$sent $total");
-        // },
       );
+      //  options.headers.addAll(response.headers);
       print(response.request);
-
-      dio.interceptors.add(CookieManager(new PersistCookieJar(dir: tempPath)));
+      var cookie = response.headers["set-cookie"].toString(),
+          token = cookie.toString().split(";")[0].split("=").last;
+      prefs = await SharedPreferences.getInstance();
+      await prefs.setString(token_header, token.toString());
     } on DioError catch (e) {
       if (e.response != null) {
         print(e.response.data);
         print(e.response.headers);
         print(e.response.request);
-        // dio.interceptors
-        //   .add(CookieManager(new PersistCookieJar(dir: "./cookies")));
-        dio.interceptors
-            .add(CookieManager(new PersistCookieJar(dir: tempPath)));
         response = e.response;
       } else {
-        // Something happened in setting up or sending the request that triggered an Error
+        print(e.request);
+        print(e.message);
+      }
+    }
+    return response;
+  }
+
+  dioPost(path, queryParameters) async {
+    var response;
+    try {
+      var uri = Uri.https(url, path);
+
+      String token = await prefs.getString(token_header);
+
+      response = await dio.post(
+        uri.toString(),
+        queryParameters: queryParameters,
+        options: Options(
+            connectTimeout: 50000,
+            receiveTimeout: 3000,
+            headers: {token_header: token}),
+        onSendProgress: (int sent, int total) {
+          print("$sent $total");
+        },
+      );
+      print(response.request);
+    } on DioError catch (e) {
+      if (e.response != null) {
+        print(e.response.data);
+        print(e.response.headers);
+        print(e.response.request);
+        response = e.response;
+      } else {
         print(e.request);
         print(e.message);
       }
@@ -57,9 +88,16 @@ class NetworkUtil {
 
   dioGet(path) async {
     try {
-      var uri = Uri.https(url, path);
+      String token = await prefs.getString(token_header);
 
-      var response = await dio.get(uri.toString());
+      var uri = Uri.https(url, path);
+      var response = await dio.get(
+        uri.toString(),
+        options: Options(
+            connectTimeout: 50000,
+            receiveTimeout: 3000,
+            headers: {token_header: token}),
+      );
       print(response.request);
       return response;
     } on DioError catch (e) {
@@ -68,51 +106,10 @@ class NetworkUtil {
         print(e.response.headers);
         print(e.response.request);
       } else {
-        // Something happened in setting up or sending the request that triggered an Error
         print(e.request);
         print(e.message);
       }
       return e.response;
     }
-  }
-
-  clientpost(path, queryParameters) async {
-    var uri = Uri.https(url, path, queryParameters);
-    print(uri);
-
-    var request = await client.postUrl(uri);
-    var response = await request.close();
-    print(response.statusCode);
-    return response;
-  }
-
-  post(path, queryParameters) async {
-    var uri = Uri.https(url, path, queryParameters);
-
-    var response = await http.post(uri, body: queryParameters);
-
-    return response;
-  }
-
-  getClient(path) async {
-    var uri = Uri.https(url, path);
-    var request = await client.getUrl(uri);
-    var response = await request.close();
-    print(response.statusCode);
-
-    // await for (var contents in response.transform(utf8.decoder)
-    //   .transform(json.decoder)
-    //   .expand((data) => (data as List))
-    //   .map((data) => News.fromJSON(data)))
-    return response;
-  }
-
-  Future get(path) async {
-    var uri = Uri.https(url, path);
-    //  uri = Uri.https("jsonplaceholder.typicode.com", "posts");
-    var response = await http.get(uri);
-    print(response.statusCode);
-
-    return response;
   }
 }

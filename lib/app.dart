@@ -13,7 +13,7 @@ class TechNews extends StatelessWidget {
       theme: defaultTheme,
       home: Scaffold(
         body: LoginPage(),
-        resizeToAvoidBottomPadding: false, 
+        resizeToAvoidBottomInset: false, 
       ),
 
       //Route

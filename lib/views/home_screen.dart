@@ -19,12 +19,10 @@ class _HomeState extends State<Home> {
   }
 
   listenForNews() async {
-    print("Reading news");
     isLoading = true;
     _news = await getNews();
     isLoading = false;
     setState(() => _news);
-    print("news read");
   }
 
   @override
@@ -49,12 +47,17 @@ class _HomeState extends State<Home> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                 ListTile(
-                    leading: Container(child: Image.network(_news[index].image)),
+                    leading: Container(
+                        child: Image.network(
+                      _news[index].image,
+                      fit: BoxFit.cover,
+                    )),
                     title: Text(
                       _news[index].title,
                       style: Theme.of(context).textTheme.title,
                     ),
-                    subtitle: Text('Author:${_news[index].author.trim()}'),
+                    subtitle: Text(
+                        'Category:${_news[index].category}\nAuthor:${_news[index].author}\nPublished:${_news[index].published}'),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -83,7 +86,8 @@ class _HomeState extends State<Home> {
               ),
               Divider(),
               ListTile(
-                subtitle: Text('Author:${_news[index].author}'),
+                subtitle: Text(
+                    'Category:${_news[index].category}\nAuthor:${_news[index].author}\nPublished:${_news[index].published}'),
               )
             ]),
           );
