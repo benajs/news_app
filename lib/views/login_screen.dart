@@ -35,20 +35,15 @@ class _LoginPageState extends State<LoginPage> {
   FormType _form = FormType.login;
 
   Future authenticate() async {
-    Map<String, String> queryParameters = {
-      'session[email]': username,
-      'session[password]': password,
-      "commit": "Sign+in"
-    };
     var path = "session";
-    var response = await _netUtil.post(path, queryParameters);
+    var response = await _netUtil.dioLogin(path, username, password);
     print(response.statusCode);
     if ([302, 200].contains(response.statusCode)) {
       print("Logged in");
       Navigator.pushNamed(context, '/home');
     }
 
-  //  Navigator.pushNamed(context, '/home');
+    //   Navigator.pushNamed(context, '/home');
   }
 
   @override
@@ -58,8 +53,12 @@ class _LoginPageState extends State<LoginPage> {
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
+            Image(
+              fit: BoxFit.cover,
+              image: AssetImage('assets/home.jpg'),
+            ),
             emailField,
             passwordField,
             _buildButtons(),
@@ -74,14 +73,19 @@ class _LoginPageState extends State<LoginPage> {
       return new Container(
         child: new Column(
           children: <Widget>[
-            new RaisedButton(
-              child: new Text('Login'),
-              onPressed: loginPressed,
-            ),
-            new FlatButton(
-              child: new Text('Dont have an account? Tap here to register.'),
-              onPressed: _formChange,
-            ),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  new RaisedButton(
+                    padding: EdgeInsets.all(2.0),
+                    child: new Text('Login'),
+                    onPressed: loginPressed,
+                  ),
+                  new RaisedButton(
+                    child: new Text('Register'),
+                    onPressed: _formChange,
+                  ),
+                ]),
             new FlatButton(
               child: new Text('Forgot Password?'),
               onPressed: _passwordReset,
@@ -93,13 +97,12 @@ class _LoginPageState extends State<LoginPage> {
       return new Container(
         child: new Column(
           children: <Widget>[
-            new Material(
-                child: RaisedButton(
+            RaisedButton(
               child: Text(
                 'Create an account',
               ),
               onPressed: _createAccountPressed,
-            )),
+            ),
             new FlatButton(
               child: new Text('Have an account? Click here to login.'),
               onPressed: _formChange,
@@ -116,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
       'session[password]': password,
     };
     var path = "user";
-    var response = _netUtil.post(path, queryParameters);
+    var response = _netUtil.dioPost(path, queryParameters);
 
     if (response.statusCode == 200) {
       print("User created");
